@@ -114,15 +114,39 @@ export function NpsDataTable({ data }: NpsDataTableProps) {
               </th>
               <th 
                 className="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                onClick={() => handleSort('recomenda')}
+              >
+                Recomenda{getSortIcon('recomenda')}
+              </th>
+              <th 
+                className="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 onClick={() => handleSort('motivo')}
               >
                 Motivo{getSortIcon('motivo')}
+              </th>
+              <th
+                className="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                onClick={() => handleSort('tipo')}
+              >
+                Setor{getSortIcon('tipo')}
+              </th>
+              <th
+                className="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                onClick={() => handleSort('qtdEnvio')}
+              >
+                Quantidade de envios{getSortIcon('qtdEnvio')}
+              </th>
+              <th 
+                className="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                onClick={() => handleSort('ultimoEnvio')}
+              >
+                Data Ultimo Envio{getSortIcon('ultimoEnvio')}
               </th>
               <th 
                 className="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 onClick={() => handleSort('dataResposta')}
               >
-                Data{getSortIcon('dataResposta')}
+                Data Resposta{getSortIcon('dataResposta')}
               </th>
             </tr>
           </thead>
@@ -149,8 +173,28 @@ export function NpsDataTable({ data }: NpsDataTableProps) {
                     {record.nota}
                   </span>
                 </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <span
+                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                      ${record.recomenda >= 9 ? 'bg-green-100 text-green-800' :
+                        record.recomenda >= 7 ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-red-100 text-red-800'
+                      }`}
+                  >
+                    {record.recomenda}
+                  </span>
+                </td>
                 <td className="px-6 py-4 text-sm text-gray-500">
                   {record.motivo}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {record.tipo === 'c' ? 'Corporativo' : record.tipo === 'r' ? 'Revenda' : 'N/A'}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {record.qtdEnvio}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {record.ultimoEnvio ? new Date(record.ultimoEnvio).toLocaleDateString() : 'N/A'}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {record.dataResposta ? new Date(record.dataResposta).toLocaleDateString() : 'N/A'}
