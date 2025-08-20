@@ -7,12 +7,16 @@ interface NpsDataTableProps {
   data: NpsRecord[];
 }
 
+const ROWS_PER_PAGE = 10;
+
 export function NpsDataTable({ data }: NpsDataTableProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState<{ key: keyof NpsRecord; direction: 'asc' | 'desc' | null }>({
     key: 'dataResposta',
     direction: 'desc',
   });
+
+  const [visibleRows, setVisibleRows] = useState(ROWS_PER_PAGE);
 
   const filteredData = useMemo(() => {
     if (!searchTerm) {
@@ -54,6 +58,10 @@ export function NpsDataTable({ data }: NpsDataTableProps) {
     return sortableItems;
   }, [filteredData, sortConfig]);
 
+  const displayedData = useMemo(() => {
+    return sortedData.slice(0, visibleRows);
+  }, [sortedData, visibleRows]);
+
   const handleSort = (key: keyof NpsRecord) => {
     let direction: 'asc' | 'desc' = 'asc';
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -71,6 +79,10 @@ export function NpsDataTable({ data }: NpsDataTableProps) {
     }
     return <span className="ml-2">↓</span>;
   };
+
+  const handleShowMore = () => {
+    setVisibleRows(prev => prev + ROWS_PER_PAGE)
+  }
 
   return (
     <div className="overflow-x-auto bg-white rounded-xl shadow-lg p-6">
@@ -151,7 +163,7 @@ export function NpsDataTable({ data }: NpsDataTableProps) {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {sortedData.map((record) => (
+            {displayedData.map((record) => (
               <tr key={record.idCliente}>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                   {record.idCliente}
@@ -206,6 +218,18 @@ export function NpsDataTable({ data }: NpsDataTableProps) {
       ) : (
         <div className="text-center py-10 text-gray-500">
           <p>Nenhuma resposta encontrada.</p>
+        </div>
+      )}
+
+      {/* Botão "Mostrar Mais" */}
+      {visibleRows < sortedData.length && (
+        <div className="text-center mt-6">
+          <button
+            onClick={handleShowMore}
+            className="px-6 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Mostrar mais... ({sortedData.length - visibleRows} restantes)
+          </button>
         </div>
       )}
     </div>
